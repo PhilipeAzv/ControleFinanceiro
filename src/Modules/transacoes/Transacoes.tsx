@@ -1,0 +1,77 @@
+import styled from "styled-components";
+import {ReactComponent as IconMinus} from "../../Icons/minus.svg"
+
+const Transactions = styled.div`
+    width: calc(70%);
+    overflow-x: auto;
+    margin: auto;
+    margin-top: 50px;
+    position: relative;
+    height: auto;
+
+    a{
+        color: green;
+        cursor: pointer;
+        font-size: 18px;    
+    }
+`
+
+const Tabela = styled.table`
+    width: 100%;
+    border-spacing: 0 0.5rem;
+    color: #969cb3;
+    border-radius: 0.25rem 0 0 0.25rem;
+    height: 300px;
+    font-size: 18px;
+    text-align: left;
+    
+    tr{
+        background-color: white;
+        border-radius: 0.25rem 0 0 0.25rem;
+        
+        &:hover{
+            opacity: 0.7;
+        }
+    }
+   
+   th{
+    padding-left: 10px;
+   }
+   
+    td{
+        padding-left: 10px;
+        border-radius: 0.25rem 0 0 0.25rem;
+    }
+
+    svg{
+        cursor: pointer;
+    }
+
+`
+
+
+
+export const Transacoes = ({data}:any) => {
+    return (
+        <Transactions>
+            <a>+ Adicionar Transação</a>
+            <Tabela>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th></th>
+                </tr>
+                {data.map(({description, amount, date}:any, index:number)=>[
+                    <tr key={index}>
+                        <td>{description}</td>
+                        <td>{amount}</td>
+                        <td>{date}</td>
+                        <td><IconMinus title="Deletar transação"/></td>
+                    </tr>
+                ])
+                }
+            </Tabela>
+        </Transactions>
+    )
+}
