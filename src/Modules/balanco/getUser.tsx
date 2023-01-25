@@ -1,4 +1,17 @@
-export const transactions:{description:string, amount: number, date: string}[] = [
+import { useEffect, useState } from "react"
+
+export class transacao{
+    description: string
+    amount: number
+    date: string
+    constructor(des:string,amount:number,date:string){
+        this.description = des
+        this.amount = amount
+        this.date = date
+    }
+}
+
+export const transactions = [
     {
         description: 'Luz',
         amount: -50000,
@@ -21,11 +34,23 @@ export const transactions:{description:string, amount: number, date: string}[] =
     }
 ]
 
-export const getUserData = ()=>{ 
-    const transacoes = transactions.map(({amount})=>amount)
-    const entradas = transacoes.filter(x=>x>0).reduce((a,b)=>a+b)
-    const saidas = Math.abs(transacoes.filter(x=>x<0).reduce((a,b)=>a+b))
-    const total = transacoes.reduce((a,b)=>a+b)
-    return {entradas,saidas,total,transactions}
-}
+export function useData(data:{description:String, amount:number, date: String}[]){
+    const [entradas, setEntradas] = useState(0)
+    const [saidas, setSaidas] = useState(0)
+    const [total, setTotal] = useState(0)
+    const [dados, setDados] = useState(Array)
 
+    useEffect(()=>{
+        const getTransacoes = data?.map(({amount})=>amount)
+        const getEntradas = getTransacoes?.filter(x=>x>0).reduce((a,b)=>a+b,0)
+        const getSaidas = Math.abs(getTransacoes?.filter(x=>x<0).reduce((a,b)=>a+b,0))
+        const getTotal = getTransacoes?.reduce((a,b)=>a+b,0)
+        
+        setDados(data)
+        setEntradas(getEntradas)
+        setSaidas(getSaidas)
+        setTotal(getTotal)
+    },[data])
+
+    return {entradas, saidas, total,dados}
+}

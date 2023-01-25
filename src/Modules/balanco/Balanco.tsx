@@ -3,7 +3,8 @@ import styled from "styled-components";
 import {ReactComponent as Plus} from "../../Icons/plus.svg"
 import {ReactComponent as IconMinus} from "../../Icons/minus.svg"
 import {ReactComponent as IconTotal} from "../../Icons/total.svg"
-import { getUserData } from "./getUser";
+import { useData, transactions } from "./getUser";
+import { useEffect } from "react";
 
 const Balance = styled.section `
     margin-top: -6rem;
@@ -50,8 +51,9 @@ p{
 
 `
 
-export const Balanco = ()=>{
-    const {entradas,saidas,total} = getUserData()
+export const Balanco = ({data}:any)=>{
+    const {entradas, saidas, total} = useData(data)
+    
     return(
         <Balance>
             <h1>Transações</h1>

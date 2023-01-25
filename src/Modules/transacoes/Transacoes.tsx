@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { useData } from "../balanco/getUser";
 import styled from "styled-components";
 import {ReactComponent as IconMinus} from "../../Icons/minus.svg"
 
@@ -24,16 +26,20 @@ const Tabela = styled.table`
     height: 300px;
     font-size: 18px;
     text-align: left;
+    height: 50px;
     
-    tr{
-        background-color: white;
-        border-radius: 0.25rem 0 0 0.25rem;
-        
+    tr:not(:first-child){
         &:hover{
             opacity: 0.7;
         }
     }
-   
+
+    tr{
+        height: 50px;
+        background-color: white;
+        border-radius: 0.25rem 0 0 0.25rem;
+    }
+    
    th{
     padding-left: 10px;
    }
@@ -51,10 +57,12 @@ const Tabela = styled.table`
 
 
 
-export const Transacoes = ({data}:any) => {
+export const Transacoes = ({data, deleteItem, openModal}:any) => {
+   const {dados} = useData(data)
+   const newData = [...data]
     return (
         <Transactions>
-            <a>+ Adicionar Transação</a>
+            <a href="#" onClick={openModal}>+ Adicionar Transação</a>
             <Tabela>
                 <tr>
                     <th>Descrição</th>
@@ -62,12 +70,12 @@ export const Transacoes = ({data}:any) => {
                     <th>Data</th>
                     <th></th>
                 </tr>
-                {data.map(({description, amount, date}:any, index:number)=>[
+                {dados?.map(({description, amount, date}:any, index:number)=>[
                     <tr key={index}>
                         <td>{description}</td>
                         <td>{amount}</td>
                         <td>{date}</td>
-                        <td><IconMinus title="Deletar transação"/></td>
+                        <td><IconMinus onClick={()=>deleteItem(index,newData)} title="Deletar transação"/></td>
                     </tr>
                 ])
                 }
