@@ -1,9 +1,6 @@
-import React from "react";
 import styled from "styled-components";
-import { transacao } from "../balanco/getUser";
 
 interface IModal{
-    data: any
     isOpened: boolean
     closeModal: ()=>void
     pushTransaction: any 
@@ -65,34 +62,34 @@ const FormButton = styled.button`
     cursor: pointer;
 `
 
-export const Modal = ({data, isOpened, closeModal, pushTransaction}:IModal)=>{
+export const Modal = ({isOpened, closeModal, pushTransaction}:IModal)=>{
     if (!isOpened) return null
 
     function addTransaction(){
         const des = (document.getElementById("description") as HTMLInputElement)?.value
         const amount = (document.getElementById("amount") as HTMLInputElement)?.value
-        const date = (document.getElementById("date") as HTMLInputElement)?.value        
+        const date = (document.getElementById("date") as HTMLInputElement)?.value
         return {des, amount, date}
     }
 
     return(
         <ModalContainer>
             <Modall>
-                <ModalForm onSubmit={()=>console.log("test")}>
+                <ModalForm onSubmit={(e)=>{e.preventDefault();pushTransaction(addTransaction()?.des, addTransaction()?.amount,addTransaction()?.date)}}>
                     <h2>Nova transação</h2>
                     <InputGroup>
-                        <Inputs type="text" name="description" id="description" placeholder="Descrição"/>
+                        <Inputs type="text" name="description" id="description" placeholder="Descrição" required/>
                     </InputGroup>
                     <InputGroup>
-                        <Inputs type="number" step="0.01" name="amount" id="amount" placeholder="0,00"/>
+                        <Inputs type="number" step="0.01" name="amount" id="amount" placeholder="0,00" required/>
                         <small>Use o sinal - (negativo) para despesas e , (virgula) para casas decimais</small>
                     </InputGroup>
                     <InputGroup>
-                        <Inputs type="date" name="date" id="date"/>
+                        <Inputs type="date" name="date" id="date" required/>
                     </InputGroup>
                     <FormActions>
-                        <FormButton onClick={(e)=>{e.preventDefault(); closeModal()}} style={{color:"red", border:"solid 1px red"}}>Cancelar</FormButton>
-                        <FormButton onClick={(e)=>{e.preventDefault(); pushTransaction(addTransaction().des, addTransaction().amount,addTransaction().date)}} style={{backgroundColor: "green", border:"none", color:"white"}}>Salvar</FormButton>
+                        <FormButton onClick={closeModal} style={{color:"red", border:"solid 1px red"}}>Cancelar</FormButton>
+                        <FormButton style={{backgroundColor: "green", border:"none", color:"white"}}>Salvar</FormButton>
                     </FormActions>
                 </ModalForm>
             </Modall>
