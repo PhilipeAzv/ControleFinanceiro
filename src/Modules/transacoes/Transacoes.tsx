@@ -77,7 +77,7 @@ export const Transacoes = ({data, deleteItem, openModal}:any) => {
                         <td>{date}</td>
                         <td><IconMinus onClick={()=>deleteItem(index,newData)} title="Deletar transação"/></td>
                     </tr>
-                ])
+                ]) 
                 }
             </Tabela>
         </Transactions>

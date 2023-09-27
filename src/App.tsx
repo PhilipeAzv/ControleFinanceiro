@@ -3,7 +3,7 @@ import styled from "styled-components"
 import "./App.css"
 import {Balanco} from "./Modules/balanco/Balanco"
 import { Transacoes } from './Modules/transacoes/Transacoes';
-import { transactions, transacao } from "../src/Modules/balanco/getUser";
+import { transactions, transacao } from "./Modules/balanco/getUser";
 import { useState, useEffect } from 'react';
 import { Toasty } from "./Modules/Toasty/Toasty";
 
@@ -25,9 +25,16 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [openToasty, setOpenToasty] = useState(false)
 
+ 
+
   useEffect(()=>{
-    setData(transactions)
+    const transactionData = localStorage.getItem('transactionsData')
+    transactionData && setData(JSON.parse(transactionData))
   },[])
+
+  useEffect(()=>{
+    datas.length > 0 && localStorage.setItem('transactionsData', JSON.stringify(datas))
+  }, [datas])
   
   function deleteItem(index:number, newData:[]){
     newData.splice(index,1)
@@ -40,6 +47,7 @@ function App() {
     const newDate = `${splitData[2]}/${splitData[1]}/${splitData[0]}`
     addedData.push(new transacao(x,Number(y),newDate))
     setData(addedData)
+    localStorage.setItem('transactionsData', JSON.stringify(addedData) )
     if(!openToasty){
       setOpenToasty(!openToasty)
     }
