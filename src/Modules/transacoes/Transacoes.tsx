@@ -57,7 +57,7 @@ const Tabela = styled.table`
 
 
 
-export const Transacoes = ({data, deleteItem, openModal}:any) => {
+export const Transacoes = ({data, deleteItem, openModal, selectItem}:any) => {
    const {dados} = useData(data)
    const newData = [...data]
     return (
@@ -71,13 +71,13 @@ export const Transacoes = ({data, deleteItem, openModal}:any) => {
                     <th></th>
                 </tr>
                 {dados?.map(({description, amount, date}:any, index:number)=>[
-                    <tr key={index}>
+                    <tr key={index} onClick={(e)=>{selectItem({description, amount, date, index}); openModal()}}>
                         <td>{description}</td>
                         <td>{amount}</td>
                         <td>{date}</td>
-                        <td><IconMinus onClick={()=>deleteItem(index,newData)} title="Deletar transação"/></td>
+                        <td><IconMinus onClick={(e)=>{ e.stopPropagation(); deleteItem(index,newData)}} title="Deletar transação"/></td>
                     </tr>
-                ])
+                ]) 
                 }
             </Tabela>
         </Transactions>
