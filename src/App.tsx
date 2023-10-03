@@ -3,10 +3,15 @@ import styled from "styled-components"
 import "./App.css"
 import {Balanco} from "./Modules/balanco/Balanco"
 import { Transacoes } from './Modules/transacoes/Transacoes';
-import { transactions, transacao } from "./Modules/balanco/getUser";
+import { functions, transacao } from "./Modules/balanco/getUser";
 import { useState, useEffect } from 'react';
 import { Toasty } from "./Modules/Toasty/Toasty";
-
+interface IData{
+  description: string
+  amount: number
+  date: string
+  index?: number
+}
 const Header = styled.header`
   width: 100%;
   height: 200px;
@@ -21,11 +26,10 @@ const Titulo = styled.h1`
 `
 
 function App() {
-  const [datas, setData] = useState(Array)
+  const [datas, setData] = useState(Array<IData>)
   const [modalOpen, setModalOpen] = useState(false)
   const [openToasty, setOpenToasty] = useState(false)
-
- 
+  const [selectedTransaction, setSelectedTransaction] = useState<IData>()
 
   useEffect(()=>{
     const transactionData = localStorage.getItem('transactionsData')
@@ -33,21 +37,14 @@ function App() {
   },[])
 
   useEffect(()=>{
-    datas.length > 0 && localStorage.setItem('transactionsData', JSON.stringify(datas))
+    datas.length > 0 ? 
+      localStorage.setItem('transactionsData', JSON.stringify(datas)) 
+    :
+      localStorage.removeItem('transactionsData')
   }, [datas])
   
-  function deleteItem(index:number, newData:[]){
-    newData.splice(index,1)
-    setData(newData)
-  }
-
-  function addTransaction(x:string,y:number,z:string){
-    const addedData = [...datas]
-    const splitData = z.split("-")
-    const newDate = `${splitData[2]}/${splitData[1]}/${splitData[0]}`
-    addedData.push(new transacao(x,Number(y),newDate))
-    setData(addedData)
-    localStorage.setItem('transactionsData', JSON.stringify(addedData) )
+  function addTransaction(transaction:any){
+    functions.addTransaction(transaction, datas, setData)
     if(!openToasty){
       setOpenToasty(!openToasty)
     }
@@ -62,8 +59,8 @@ function App() {
     <Titulo>Sistema Financeiro $</Titulo>
     </Header>
     <Balanco data={datas}/>
-    <Transacoes openModal={()=>setModalOpen(!modalOpen)} data={datas} deleteItem={deleteItem}/>
-    <Modal pushTransaction={addTransaction} isOpened={modalOpen} closeModal={()=>setModalOpen(false)}/>
+    <Transacoes openModal={()=>setModalOpen(!modalOpen)} data={datas} deleteItem={(p1:any, p2:any)=>functions.deleteTransaction(p1,p2, setData)} selectItem={(item:any)=>functions.selectItem(item,setSelectedTransaction)}/>
+    <Modal pushTransaction={(transaction:any)=>addTransaction(transaction)} isOpened={modalOpen} closeModal={()=>{setModalOpen(false); setSelectedTransaction(undefined)}} selectedItem={selectedTransaction} editItem={()=>functions.editTransaction(datas,selectedTransaction,setData)}/>
     </>
   );
 }

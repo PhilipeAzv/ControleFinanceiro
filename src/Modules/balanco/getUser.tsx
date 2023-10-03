@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 
 export class transacao{
     description: string
@@ -11,28 +11,30 @@ export class transacao{
     }
 }
 
-export const transactions = [
-    {
-        description: 'Luz',
-        amount: -50000,
-        date: '23/01/2021'
+export const functions = {
+    selectItem(transaction:any, callback:(param:any)=>void){
+        callback(transaction)
+      },
+      editTransaction(data:any, selectedTransaction:any, callback:(param:any)=>void){
+        const des = (document.getElementById("description") as HTMLInputElement)?.value
+        const amount = Number((document.getElementById("amount") as HTMLInputElement)?.value)
+        const date = (document.getElementById("date") as HTMLInputElement)?.value.split('-').reverse().map((x, index)=>{if(index < 2){return x+'/'}else{return x}}).join('')
+        const editedData = [...data]
+        callback(()=>editedData.map((x:any, index)=> index === selectedTransaction?.index ? {description: des, amount: amount, date: date} : x ))
     },
-    {
-        description: 'Website',
-        amount: 500000,
-        date: '23/01/2021'
-    },
-    {
-        description: 'Internet',
-        amount: -20000,
-        date: '23/01/2021'
-    },
-    {
-        description: 'App',
-        amount: 200000,
-        date: '23/01/2021'
-    }
-]
+    deleteTransaction(index:number, data:any, callback:(param:any)=>void){
+        const filteredData = (data.filter((item:any,itemIndex:any)=>itemIndex !== index ))
+       callback(filteredData)
+      },
+      addTransaction(transaction:{des:string, amount: number, date:string}, data:any, callback:(param:any)=>void){
+        const addedData = [...data]
+        const splitData = transaction.date.split("-")
+        const newDate = `${splitData[2]}/${splitData[1]}/${splitData[0]}`
+        addedData.push(new transacao(transaction.des,Number(transaction.amount),newDate))
+        callback(addedData)
+        localStorage.setItem('transactionsData', JSON.stringify(addedData))
+      }
+}
 
 export function useData(data:{description:String, amount:number, date: String}[]){
     const [entradas, setEntradas] = useState(0)
